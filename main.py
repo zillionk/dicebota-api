@@ -15,6 +15,8 @@
 # limitations under the License.
 #
 import webapp2
+import logging
+import json
 
 
 DEFAULT_CONTENT = '1D6+2 sample test'
@@ -26,13 +28,14 @@ class MainHandler(webapp2.RequestHandler):
 class RollDice(webapp2.RequestHandler):
     def get(self):
         message_content = self.request.get('content', DEFAULT_CONTENT)
-        self.response.write('<html><body>')
-        self.response.write(message_content)
-        self.response.write('</body></html>')
-        self.response.content = message_content + ", this works!"
+        result = {
+                'content': message_content,
+        }
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.write(json.dumps(result))
 
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
-    ('/dice',RollDice),
+    ('/dice',RollDice), 
 ], debug=True)
